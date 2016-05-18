@@ -8,7 +8,7 @@ output:
     smaller: true
     transition: "faster"
     widescreen: true
-    css: templates/source2.css
+    css: css/overrides.css
     fig_width: 9.16
     keep_md: true
     logo: img/logo.svg
