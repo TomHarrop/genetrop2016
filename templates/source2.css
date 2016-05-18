@@ -1,0 +1,40 @@
+
+/*Dunno what this is for. Transition slide maybe?*/
+/*.source2 {
+  font-size: 14px;
+  color: darkgrey;
+  text-align: right;
+  position: absolute;
+  bottom: 70px;
+  right: 60px;
+}
+*/
+
+/*Centre align headings*/
+h1, h2, h3 {
+    text-align: center;
+}
+.title-slide h1 {
+    text-align: left;
+}
+
+/*Background image for some slides*/
+slide:nth-of-type(2), slide:nth-last-of-type(2) {
+  background: url("../img/p2r.png");
+  background-size: cover;
+  background-position: center
+}
+
+/*Centre flexbox on every slide*/
+slide article {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*Scale images to 879x432 to allow higher res*/
+slide article img {
+    max-width: 879px;
+    max-height: 432px;
+}
+

@@ -1,0 +1,73 @@
+---
+title: "Evolution & regulation of rice inflorescence development"
+author: "Tom Harrop<br>thomas.harrop@ird.fr<br>"
+date: "24 May 2016"
+output:
+  ioslides_presentation:
+    self_contained: false
+    smaller: true
+    transition: "faster"
+    widescreen: true
+    css: templates/source2.css
+    fig_width: 9.16
+    keep_md: true
+    logo: img/logo.svg
+---
+
+```{r setup, include=FALSE, results="hide"}
+library(ggplot2)
+theme_slide <- theme_grey(base_size = 16, base_family = "Lato") +
+  theme(
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    legend.background = element_rect(fill = "transparent", colour = NA))
+knitr::opts_chunk$set(
+  dev.args=list(bg = "transparent", family = "Lato"),
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  dpi = 300)
+source("src/plots.R")
+```
+
+## Rice facts
+
+*  blah
+*  blah
+
+## Rice inflorescence architecture
+
+```{r panicle}
+my.img <- png::readPNG("img/panicle.png")
+grid::grid.raster(my.img)
+```
+
+## Branching complexity is related to yield
+
+```{r ptypes2}
+print(ptypes2)
+```
+
+## Meristem identities
+
+```{r pandev}
+my.img <- png::readPNG("img/pan_dev.png")
+grid::grid.raster(my.img)
+```
+
+## Branching genes
+
+
+## Transcriptional regulation of branching
+
+
+## Laser microdissection (LMD) {.centered .flexbox .vcenter}
+
+```{r lmd2}
+my.img <- png::readPNG("img/lmdFigure.png")
+grid::grid.raster(my.img)
+```
+
+## Last slide
+
+*  blah
+*  blah
