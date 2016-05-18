@@ -15,7 +15,14 @@ output:
 ---
 
 ```{r setup, include=FALSE, results="hide"}
+
 library(ggplot2)
+
+# for proper scaling in the html, the figures should be:
+# w    x    h
+# 879       432  px
+# 9.16      4.5  in
+
 theme_slide <- theme_grey(base_size = 16, base_family = "Lato") +
   theme(
     plot.background = element_rect(fill = "transparent", colour = NA),
