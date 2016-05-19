@@ -1,7 +1,7 @@
 library(ggplot2)
 library(data.table)
 
-source("src/columm_plots.R")
+source("src/column_plots.R")
 
 
 # PANICLE PHENOTYPES #

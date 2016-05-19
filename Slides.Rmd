@@ -25,8 +25,9 @@ library(ggplot2)
 # 9.16      4.5  in
 # for slides with subtitles:
 # w    x    h
-# 879       432  px
+# 879       384  px
 # 9.16      4  in
+# higher dpi can be used  in R but the figures have to be resized using css
 
 theme_slide <- theme_grey(base_size = 16, base_family = "Lato") +
   theme(
@@ -67,7 +68,10 @@ grid::grid.raster(my.img)
 
 ## Meristem transitions & branching | *TAWAWA1* / *G1 LIKE PROTEIN 5*
 
-Content
+```{r taw}
+my.img <- png::readPNG("img/taw.png")
+grid::grid.raster(my.img)
+```
 
 <footer class="source2">Yoshida <em>et al</em>., 2013. <a href="http://www.pnas.org/content/110/2/767.full">10.1073/pnas.1216151110</a></footer>
 
