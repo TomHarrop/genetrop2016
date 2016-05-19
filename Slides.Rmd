@@ -10,6 +10,7 @@ output:
     widescreen: true
     css: css/overrides.css
     fig_width: 9.16
+    fig_height: 4.5
     keep_md: true
     logo: img/logo.svg
 ---
@@ -22,6 +23,10 @@ library(ggplot2)
 # w    x    h
 # 879       432  px
 # 9.16      4.5  in
+# for slides with subtitles:
+# w    x    h
+# 879       432  px
+# 9.16      4  in
 
 theme_slide <- theme_grey(base_size = 16, base_family = "Lato") +
   theme(
@@ -38,8 +43,7 @@ source("src/plots.R")
 
 ## Rice facts
 
-*  blah
-*  blah
+*  IRD people know this stuff
 
 ## Rice inflorescence architecture
 
@@ -61,17 +65,57 @@ my.img <- png::readPNG("img/pan_dev.png")
 grid::grid.raster(my.img)
 ```
 
-## Branching genes
+## Meristem transitions & branching | *TAWAWA1* / *G1 LIKE PROTEIN 5*
 
+Content
 
-## Transcriptional regulation of branching
+<footer class="source2">Yoshida <em>et al</em>., 2013. <a href="http://www.pnas.org/content/110/2/767.full">10.1073/pnas.1216151110</a></footer>
 
+## Meristem transitions & branching | *LONELY GUY 1*
+
+Content
+
+<footer class="source2">Kurakawa <em>et al</em>., 2007 <a href="http://www.nature.com/nature/journal/v445/n7128/full/nature05504.html">10.1038/nature05504</a></footer>
 
 ## Laser microdissection (LMD) {.centered .flexbox .vcenter}
 
 ```{r lmd2}
 my.img <- png::readPNG("img/lmdFigure.png")
 grid::grid.raster(my.img)
+```
+
+## LMD experiments:
+
+*   clusters -> ALOG genes
+*   tf families -> HD-ZIP IV
+
+## Applications of LMD data
+
+*   functional characterisation
+*   gene regulatory network
+*   correlation with phenotypic diversity
+
+## Diversity in panicle architecture
+
+Content
+
+## Domestication of Asian rice
+
+```{r as}
+print(as.genes)
+```
+
+## Domestication of African rice
+
+```{r af, fig.width=9.16/2}
+print(af.genes)
+print(af.genes2)
+```
+
+## Parallel evolution
+
+```{r dom}
+print(dom.genes)
 ```
 
 ## Last slide

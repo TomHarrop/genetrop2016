@@ -1,6 +1,5 @@
-
-/*Dunno what this is for. Transition slide maybe?*/
-/*.source2 {
+/*Refereces*/
+.source2 {
   font-size: 14px;
   color: darkgrey;
   text-align: right;
@@ -8,7 +7,6 @@
   bottom: 70px;
   right: 60px;
 }
-*/
 
 /*Centre align headings*/
 h1, h2, h3 {
