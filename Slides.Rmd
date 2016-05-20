@@ -13,21 +13,26 @@ output:
     fig_height: 4.5
     keep_md: true
     logo: img/logo.svg
+    md_extensions: +multiline_tables+pipe_tables
 ---
 
 ```{r setup, include=FALSE, results="hide"}
 
 library(ggplot2)
 
-# for proper scaling in the html, the figures should be:
+# Default resolution is 96 dpi. Higher dpi can be used in R but the figures have to be resized using css.
+# For proper scaling in the html, the figures should be:
 # w    x    h
 # 879       432  px
 # 9.16      4.5  in
 # for slides with subtitles:
 # w    x    h
-# 879       384  px
-# 9.16      4  in
-# higher dpi can be used  in R but the figures have to be resized using css
+# 879       362  px
+# 9.16      3.77  in
+#
+# the smaller figure is not quite right, try 432 px - 48 px - (45 px / 2)
+# 48 px = space taken by the h3 (subtitle)
+# 45 px = margin added to slide > article 
 
 theme_slide <- theme_grey(base_size = 16, base_family = "Lato") +
   theme(
@@ -38,20 +43,18 @@ knitr::opts_chunk$set(
   echo = FALSE,
   message = FALSE,
   warning = FALSE,
-  dpi = 300)
+  dpi = 300,
+  cache = TRUE)
 source("src/plots.R")
 ```
 
 ## Rice facts
 
-*  IRD people know this stuff
+*  **IRD people know this stuff**
 
 ## Rice inflorescence architecture
 
-```{r panicle}
-my.img <- png::readPNG("img/panicle.png")
-grid::grid.raster(my.img)
-```
+![](img/panicle.png)
 
 ## Branching complexity is related to yield
 
@@ -61,14 +64,11 @@ print(ptypes2)
 
 ## Meristem identities
 
-```{r pandev}
-my.img <- png::readPNG("img/pan_dev.png")
-grid::grid.raster(my.img)
-```
+![](img/pan_dev.png)
 
 ## Meristem transitions & branching | *TAWAWA1* / *G1 LIKE PROTEIN 5*
 
-```{r taw}
+```{r taw, fig.height = 3.77}
 my.img <- png::readPNG("img/taw.png")
 grid::grid.raster(my.img)
 ```
@@ -77,16 +77,16 @@ grid::grid.raster(my.img)
 
 ## Meristem transitions & branching | *LONELY GUY 1*
 
-Content
+```{r log1, fig.height = 3.77}
+my.img <- png::readPNG("img/log1.png")
+grid::grid.raster(my.img)
+```
 
 <footer class="source2">Kurakawa <em>et al</em>., 2007 <a href="http://www.nature.com/nature/journal/v445/n7128/full/nature05504.html">10.1038/nature05504</a></footer>
 
-## Laser microdissection (LMD) {.centered .flexbox .vcenter}
+## Laser microdissection (LMD)
 
-```{r lmd2}
-my.img <- png::readPNG("img/lmdFigure.png")
-grid::grid.raster(my.img)
-```
+![](img/lmdFigure.png)
 
 ## LMD experiments:
 
@@ -101,7 +101,69 @@ grid::grid.raster(my.img)
 
 ## Diversity in panicle architecture
 
-Content
+![](img/species.png)
+
+## Sampling
+
+![](img/clearing.png)
+
+## Sampling
+
+| **Species**              | **Accession** | **Continent** | **Type**     | **Dev. stage** |
+| -----------------------: | :----:        | :---------:   | :-------:    | :----------:   |
+| *O. rufipogon*           | W1654         | Asia          | Wild         | PBM            |
+| *O. rufipogon*           | W1654         | Asia          | Wild         | SM             |
+| *O. sativa japonica*     | Nipponbare    | Asia          | Domesticated | PBM            |
+| *O. sativa japonica*     | Nipponbare    | Asia          | Domesticated | SM             |
+| *O. sativa indica*       | IR64          | Asia          | Domesticated | PBM            |
+| *O. sativa indica*       | IR64          | Asia          | Domesticated | SM             |
+| *O. barthii*             | B88           | Africa        | Wild         | PBM            |
+| *O. barthii*             | B88           | Africa        | Wild         | SM             |
+| *O. glaberrima*          | Tog5681       | Africa        | Domesticated | PBM            |
+| *O. glaberrima*          | Tog5681       | Africa        | Domesticated | SM             |
+
+## Diversity in panicle architecture
+
+```{r accessions}
+print(acc.pheno)
+```
+
+## Basic molecular mechanisms | `r n.sig.stage` genes
+
+```{r stage.genes, fig.height = 3.77}
+print(stage.genes)
+```
+
+## Structural variation between species
+
+```{r struc1, fig.height = 4.5/2, cache = FALSE}
+print(struct1)
+print(struct2)
+```
+
+## Structural variation between species
+
+```{r struc2, fig.height = 4.5/2, cache = FALSE}
+print(struct3)
+print(struct4)
+```
+
+## Structural variation between species
+
+table 
+
+"                contrast n_sig
+ 1:   barthii.glaberrima   495
+ 2:       barthii.indica  1915
+ 3:    barthii.rufipogon  1983
+ 4:    glaberrima.indica  2037
+ 5: glaberrima.rufipogon  2187
+ 6:     indica.rufipogon  1169
+ 7:     japonica.barthii  2225
+ 8:  japonica.glaberrima  2454
+ 9:      japonica.indica  1680
+10:   japonica.rufipogon  1441
+"
 
 ## Domestication of Asian rice
 
@@ -112,8 +174,8 @@ print(as.genes)
 ## Domestication of African rice
 
 ```{r af, fig.width=9.16/2}
-print(af.genes)
-print(af.genes2)
+print(af2.genes)
+print(af1.genes)
 ```
 
 ## Parallel evolution
@@ -121,6 +183,25 @@ print(af.genes2)
 ```{r dom}
 print(dom.genes)
 ```
+
+## Mention some other approaches for the data
+
+*   genomic data for SNPs and transposable elements
+*   structural variation in genes
+
+## Test multiline table
+
+-------------------------------------------------------------
+ Centered   Default           Right Left
+  Header    Aligned         Aligned Aligned
+----------- ------- --------------- -------------------------
+   First    row                12.0 Example of a row that
+                                    spans multiple lines.
+
+  Second    row                 5.0 Here's another one. Note
+                                    the blank line between
+                                    rows.
+-------------------------------------------------------------
 
 ## Last slide
 

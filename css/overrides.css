@@ -1,3 +1,8 @@
+/*Font*/
+slides slide {
+  font-family: "Lato", "Open Sans", Arial, sans-serif;
+}
+
 /*Refereces*/
 .source2 {
   font-size: 14px;
@@ -36,3 +41,20 @@ slide article img {
     max-height: 432px;
 }
 
+/*Tables*/
+slide article table.rmdtable {
+  width: auto;
+  border-bottom: 0;
+}
+
+slide article table.rmdtable th {
+  width: auto;
+  border-bottom: 0;
+  font-size: 18px;
+  background: #377eb8;
+}
+
+slide article table.rmdtable td, table th {
+  padding: 0.5em 1em;
+  font-size: 18px;
+}

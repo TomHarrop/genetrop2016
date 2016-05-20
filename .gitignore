@@ -1,7 +1,9 @@
+
 .Rhistory
 *.html
 *.md
 Slides_files/*
+Slides_cache/
 data/*
 inkscape/*
 .Rproj.user/
