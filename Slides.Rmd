@@ -13,7 +13,7 @@ output:
     fig_height: 4.5
     keep_md: true
     logo: img/logo.svg
-    md_extensions: +multiline_tables+pipe_tables
+    md_extensions: +pipe_tables
 ---
 
 ```{r setup, include=FALSE, results="hide"}
@@ -88,6 +88,40 @@ grid::grid.raster(my.img)
 
 ![](img/lmdFigure.png)
 
+## Gene coexpression
+
+```{r mfuzz}
+print(mfuzzClusters)
+```
+
+## Gene coexpression
+
+```{r cluster.tfs}
+cluster.tfs
+```
+
+## G1-Like (ALOG) genes
+
+```{r alog}
+print(alog)
+```
+
+## Geneset enrichment
+
+```{r gsea}
+gsea
+```
+
+## Introduce homeobox genes
+
+Figure from that paper w/ phylogeny?
+
+## Class III & IV HD-Zip genes
+
+```{r hdzip, cache = FALSE}
+print(hdzip)
+``` 
+
 ## LMD experiments:
 
 *   clusters -> ALOG genes
@@ -105,12 +139,8 @@ grid::grid.raster(my.img)
 
 ## Sampling
 
-![](img/clearing.png)
-
-## Sampling
-
 | **Species**              | **Accession** | **Continent** | **Type**     | **Dev. stage** |
-| -----------------------: | :----:        | :---------:   | :-------:    | :----------:   |
+| -----------------------: | :----         | :---------    | :-------     | :----------    |
 | *O. rufipogon*           | W1654         | Asia          | Wild         | PBM            |
 | *O. rufipogon*           | W1654         | Asia          | Wild         | SM             |
 | *O. sativa japonica*     | Nipponbare    | Asia          | Domesticated | PBM            |
@@ -121,6 +151,10 @@ grid::grid.raster(my.img)
 | *O. barthii*             | B88           | Africa        | Wild         | SM             |
 | *O. glaberrima*          | Tog5681       | Africa        | Domesticated | PBM            |
 | *O. glaberrima*          | Tog5681       | Africa        | Domesticated | SM             |
+
+## Sampling
+
+![](img/clearing.png)
 
 ## Diversity in panicle architecture
 
@@ -150,20 +184,12 @@ print(struct4)
 
 ## Structural variation between species
 
-table 
-
-"                contrast n_sig
- 1:   barthii.glaberrima   495
- 2:       barthii.indica  1915
- 3:    barthii.rufipogon  1983
- 4:    glaberrima.indica  2037
- 5: glaberrima.rufipogon  2187
- 6:     indica.rufipogon  1169
- 7:     japonica.barthii  2225
- 8:  japonica.glaberrima  2454
- 9:      japonica.indica  1680
-10:   japonica.rufipogon  1441
-"
+| Contrast                                | *p* < 0.05    |
+| ---:                                    | :----         |
+| *O. glaberrima* vs. *O. barthii*        | 495           |
+| *O. sativa indica* vs. *O. rufipogon*   | 1169          |
+| *O. sativa japonica* vs. *O. indica*    | 1680          |
+| *O. sativa japonica* vs. *O. rufipogon* | 1441          |
 
 ## Domestication of Asian rice
 
@@ -203,7 +229,12 @@ print(dom.genes)
                                     rows.
 -------------------------------------------------------------
 
-## Last slide
+## Acknowledgements
 
-*  blah
-*  blah
+*  **EDI team & IRD**
+*  **Kater Lab, Università degli Studi di Milano, Italy**
+*  **Funding: Fondation Agropolis & Fondazione Cariplo**
+
+![](img/agropolis.png)
+
+![](img/cariplo.png)
