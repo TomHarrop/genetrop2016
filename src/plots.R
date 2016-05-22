@@ -10,11 +10,14 @@ theme_slide <- theme_grey(base_size = 16, base_family = "Lato") +
 # LOAD DATA #
 #############
 
+# LMD lib stats
+lmd.quant <- readRDS("data/lmd/quantStats/libStats.Rds")
+
 # LMD expression values
 tpm.lmd.wide <- data.table(readRDS("data/lmd/tpm/tpm.Rds"),
                            keep.rownames = TRUE)
 tpm.lmd.long <- melt(tpm.lmd.wide, id.vars = "rn",variable.name = "library",
-     value.name = "Transcripts per million")
+                     value.name = "Transcripts per million")
 setkey(tpm.lmd.long, rn, library)
 
 # LMD expression calls
@@ -63,6 +66,9 @@ rd2 <- as.data.table(read.table("data/OsOgObOrPTRAPdata.txt",
 # 5 accessions diversity
 rawData <- data.table(read.csv('data/Phenotype_Panicle_corrected.csv',
                                stringsAsFactors = FALSE))
+
+# 5acc seq stats
+stats.5ac <- readRDS("data/fiveacc/mappingStats/starLogs.Rds")
 
 # basic genes
 stage.table <- readRDS(
@@ -148,15 +154,36 @@ pd[, Species := factor(
   levels = c("O. sativa", "O. rufipogon", "O. glaberrima", "O. barthii"))]
 
 # plot phenotypes
-acc.pheno <- ggplot(pd, aes(x = Accession, y = value, colour = Species)) +
+cols.acc <- RColorBrewer::brewer.pal(5, "Set1")[c(2, 1, 5, 4)]
+acc.pheno <- ggplot(pd, aes(x = Accession, y = value, fill = Species)) +
   facet_wrap(~variable, scales = "free_y", ncol = 3) +
   theme_slide +
-  scale_colour_brewer(palette = "Set1", guide = guide_legend(title=NULL)) +
+  scale_fill_manual(values = cols.acc, guide = guide_legend(title=NULL)) +
   xlab(NULL) + ylab(NULL) +
   theme(legend.text = element_text(face = "italic"),
         legend.position = "top",
         axis.text.x	= element_text(angle = 45, hjust = 1)) +
-  geom_point(size = 2, alpha = 0.5, position = position_jitter(width = 0.4))
+  geom_point(size = 2, alpha = 0.5, shape = 21, colour = NA,
+             position = position_jitter(width = 0.4))
+
+#############
+# lmd stats #
+#############
+
+lmd.quant.table <- lmd.quant[, .(
+  Library, Sample, `Number of panicles`, `Dissected area (mm²)`, `Yield (ng)`,
+  RIN, `Reads (M)`, `Reads in genes (M)`, `Detected genes`, `rRNA reads (M)`
+)]
+lmd.quant.table[, Sample := factor(plyr::mapvalues(Sample, "ePBM/SBM", "ePBM/AM"),
+                                   levels = c("RM", "PBM", "ePBM/AM", "SM"))]
+
+lmd.ribosomal <- ggplot(lmd.quant.table,
+                        aes(x = `Yield (ng)`, y = `rRNA reads (M)`)) +
+  theme_slide + 
+  xlab("RNA input (ng)") +
+  scale_fill_brewer(palette = "Set1", guide = guide_legend(title = NULL)) +
+  geom_smooth(method = "lm", colour = "black", size = 0.5, se = FALSE) +
+  geom_point(aes(fill = Sample), colour = NA, shape = 21, size = 3, alpha = 0.8)
 
 ############
 # clusters #
@@ -194,8 +221,8 @@ centres.wide[, c("n1n2", "n2n4") :=
 centres.wide[, c("dn1n2", "dn2n4") :=
                list(c('dec', 'small', 'inc')[cut(
                  n1n2, breaks = c(-Inf, -0.5, 0.5, Inf))],
-                    c('dec', 'small', 'inc')[cut(
-                      n2n4, breaks = c(-Inf, -1, 1, Inf))])]               
+                 c('dec', 'small', 'inc')[cut(
+                   n2n4, breaks = c(-Inf, -1, 1, Inf))])]               
 
 # first, show gradual increase / decrease
 centres.wide[dn1n2 == dn2n4, cOrder := c(1,2)[order(RM)]]
@@ -301,7 +328,7 @@ alog <- ggplot(pd.alog, aes(x = stage, y = `Transcripts per million`,
   scale_colour_manual(values = cols, guide = FALSE) +
   facet_wrap(~symbol, nrow = 2, scales = "free_y") +
   geom_smooth(se = FALSE, colour = "grey40", size = 0.5) +
-  geom_point(position = position_jitter(width = 0.3))
+  geom_point(position = position_jitter(width = 0.3), alpha = 0.8)
 
 #################
 # TF Enrichment #
@@ -368,6 +395,33 @@ hdzip <- ggplot(pd.hb, aes(x = symbol, y = Stage, fill = `Scaled reads`)) +
   facet_grid(. ~ class, scales = "free_x", space = "free_x") +
   geom_raster()
 
+##############
+# 5acc stats #
+##############
+
+stats.5ac[, Species := factor(plyr::revalue(
+  substr(Library, 1, 1),
+  c(I = "O. sativa indica",
+    J = "O. sativa japonica",
+    R = "O. rufipogon",
+    G = "O. glaberrima",
+    B = "O. barthii")),
+  levels = c("O. rufipogon", "O. sativa indica", "O. sativa japonica",
+             "O. barthii", "O. glaberrima"))]
+
+statplot.5ac <- ggplot(
+  stats.5ac,
+  aes(x = `Number of input reads`/1e6, y = `Number of reads in genes`/1e6,
+      group = Species, colour = Species)) +
+  theme_slide +
+  theme(strip.text.x = element_text(face = "italic")) +
+  coord_fixed() +
+  xlab("Input reads (M)") + ylab("Reads in genes (M)") +
+  facet_wrap(~ Species, nrow = 2) +
+  scale_colour_brewer(palette = "Set1", guide = FALSE) +
+  geom_hline(aes(yintercept = 20), size = 0.5, linetype = 2, colour = "grey20") +
+  geom_smooth(method = "lm", se = FALSE, size = 0.5, alpha = 0.5) +
+  geom_point()
 
 ###############
 # Basic genes #

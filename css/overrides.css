@@ -45,6 +45,12 @@ slide article img {
 slide article table.rmdtable {
   width: auto;
   border-bottom: 0;
+
+}
+slide article#lmd-rna-sequencing table.rmdtable th,
+slide article#lmd-rna-sequencing table.rmdtable td {
+  padding: 0.25em 0.5em;
+  font-size: 16px;
 }
 
 slide article table.rmdtable th {
