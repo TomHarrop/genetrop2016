@@ -12,7 +12,6 @@ output:
     fig_width: 9.16
     fig_height: 4.5
     keep_md: true
-    logo: img/logo.svg
     md_extensions: +pipe_tables
 ---
 
@@ -48,19 +47,24 @@ knitr::opts_chunk$set(
 source("src/plots.R")
 ```
 
-## Rice facts
+## Rice inflorescence structure
 
-*  **IRD people know this stuff**
+![](img/panicle_s.png)
 
-## Rice inflorescence architecture
+<br>
 
-![](img/panicle.png)
+*  **Cereals are staple foods**
+*  **Rice supplies a large proportion of dietary energy globally**
+*  **Demand increasing, resources decreasing**
+*  **Grain production depends on the structure of the inflorescence**
 
 ## Branching complexity is related to yield
 
 ```{r ptypes2}
 print(ptypes2)
 ```
+
+<footer class="source2">Phenotyping: M. Lorieux (CIAT) & H. Adam</footer>
 
 ## Meristem identities
 
@@ -96,28 +100,28 @@ knitr::kable(lmd.quant.table[!is.na(`Reads in genes (M)`)],
              align = c("r", rep("l", dim(lmd.quant.table)[2] - 1)))
 ```
 
-## rRNA contamination
+## Ovation V2 & rRNA exclusion
 
 ```{r lmd.ribosomal}
 print(lmd.ribosomal)
 ```
 
-## Gene coexpression
+## Coexpression clusters
 
 ```{r mfuzz}
 print(mfuzzClusters)
 ```
 
-## Gene coexpression
-
-```{r cluster.tfs}
-cluster.tfs
-```
-
-## G1-Like (ALOG) genes
+## G1-Like genes & targets
 
 ```{r alog}
 print(alog)
+```
+
+## Coexpression clusters
+
+```{r cluster.tfs}
+cluster.tfs
 ```
 
 ## Geneset enrichment
@@ -126,11 +130,11 @@ print(alog)
 gsea
 ```
 
-## Homeobox genes
+## *SPL*/*SBP* genes
 
-![](img/image_n_FEBS_6424_f1.gif)
-
-<footer class="source2">Jain <em>et al</em>., 2008 <a href="http://onlinelibrary.wiley.com/doi/10.1111/j.1742-4658.2008.06424.x/full">10.1111/j.1742-4658.2008.06424.x</a></footer>
+```{r spl.plot}
+print(spl.plot)
+```
 
 ## Class III & IV HD-Zip genes
 
@@ -142,9 +146,9 @@ print(hdzip)
 
 ![](img/lmd_persp.png)
 
-<footer class="source2">Wang <em>et al</em>., 2015 <a href="http://www.pnas.org/content/112/50/15504.long">10.1073/pnas.1521949112</a><br>Smet & Marchal, 2010 <a href="http://www.nature.com/nrmicro/journal/v8/n10/full/nrmicro2419.html">10.1038/nrmicro2419</a></footer>
+<footer class="source2">Wang <em>et al</em>., 2015 <a href="http://www.pnas.org/content/112/50/15504.long">10.1073/pnas.1521949112</a>; Smet & Marchal, 2010 <a href="http://www.nature.com/nrmicro/journal/v8/n10/full/nrmicro2419.html">10.1038/nrmicro2419</a></footer>
 
-## Diversity in panicle architecture
+## Diversity of panicle architecture
 
 ![](img/species.png)
 
@@ -153,6 +157,8 @@ print(hdzip)
 ```{r accessions}
 print(acc.pheno)
 ```
+
+<footer class="source2">Phenotyping: H. Adam</footer>
 
 ## Sampling
 

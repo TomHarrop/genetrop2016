@@ -22,11 +22,19 @@ h1, h2, h3 {
 }
 
 /*Background image for some slides*/
-slide:nth-of-type(2), slide:nth-last-of-type(2) {
+slide.title-slide,
+slide:nth-last-of-type(2) {
   background: url("p2r.png");
   background-size: cover;
   background-position: center
 }
+
+/*Tidy tiling on list + photo slide*/
+slide:nth-of-type(2) article ul {
+  max-width: 300px;
+  margin-left: 4em;
+  }
+
 
 /*Centre flexbox on every slide*/
 slide article {

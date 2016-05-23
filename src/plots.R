@@ -76,7 +76,7 @@ stage.table <- readRDS(
 
 # structural variation
 species.results <- readRDS(
-  "data/fiveacc/deseq2/wald_species/contrast_results.Rds")
+  "data/species_results.Rds")
 
 # domestication genes
 int.results.table <- readRDS(
@@ -174,16 +174,32 @@ lmd.quant.table <- lmd.quant[, .(
   Library, Sample, `Number of panicles`, `Dissected area (mm²)`, `Yield (ng)`,
   RIN, `Reads (M)`, `Reads in genes (M)`, `Detected genes`, `rRNA reads (M)`
 )]
-lmd.quant.table[, Sample := factor(plyr::mapvalues(Sample, "ePBM/SBM", "ePBM/AM"),
-                                   levels = c("RM", "PBM", "ePBM/AM", "SM"))]
+lmd.quant.table[, Sample := factor(
+  plyr::mapvalues(Sample, "ePBM/SBM", "ePBM/AM"),
+  levels = c("RM", "PBM", "ePBM/AM", "SM"))]
+
+# lmd.pd <- melt(
+#   lmd.quant.table,
+#   id.vars = c("Library", "Sample", "rRNA reads (M)"))
+# lmd.pd <- lmd.pd[variable %in% c("Yield (ng)", "RIN")]
+# lmd.ribosomal <- ggplot(lmd.pd,
+#        aes(x = value, y = `rRNA reads (M)`)) +
+#   facet_grid(. ~ variable, scales = "free_x") +
+#   theme_slide + 
+#   xlab(NULL) +
+#   scale_fill_brewer(palette = "Set1", guide = guide_legend(title = NULL)) +
+#   geom_smooth(colour = "black", size = 0.5, se = TRUE, span = 1) +
+#   geom_point(aes(fill = Sample), colour = NA, shape = 21, size = 3,
+#              alpha = 0.8)
 
 lmd.ribosomal <- ggplot(lmd.quant.table,
                         aes(x = `Yield (ng)`, y = `rRNA reads (M)`)) +
-  theme_slide + 
+  theme_slide +
   xlab("RNA input (ng)") +
   scale_fill_brewer(palette = "Set1", guide = guide_legend(title = NULL)) +
-  geom_smooth(method = "lm", colour = "black", size = 0.5, se = FALSE) +
-  geom_point(aes(fill = Sample), colour = NA, shape = 21, size = 3, alpha = 0.8)
+  geom_smooth(colour = "black", size = 0.5, se = TRUE, span = 1) +
+  geom_point(aes(fill = Sample), colour = NA, shape = 21, size = 3,
+             alpha = 0.8)
 
 ############
 # clusters #
@@ -293,17 +309,27 @@ family.clusters <- melt(
   variable.name = "Cluster", value.name = "Number of genes")
 pd <- family.clusters[total > 0]
 pd[`Number of genes` > 0, tile_lab := `Number of genes`]
+pd[, mnpc := max(`Number of genes`), by = Fam]
 
 # order the y-axis
 pd[, Cluster := factor(Cluster, levels = rev(levels(Cluster)))]
 
-cluster.tfs <- ggplot(pd[`Number of genes` > 0],
+# order the x-axis
+x.ord.frame <- data.frame(family.clusters.wide[, .(
+  Fam, C1, C2, C3, C4, C5, C6, C7, C8)],
+  row.names = "Fam")
+x.ord.mat <- as.matrix(x.ord.frame)
+hc <- hclust(dist(x.ord.mat, method = "minkowski"), method = "ward.D2")
+tfs.ord <- rownames(x.ord.frame)[hc$order]
+pd[, Fam := factor(Fam, levels = tfs.ord)]
+
+cluster.tfs <- ggplot(pd[`Number of genes` > 0 & mnpc > 1],
                       aes(y = Cluster, fill = `Number of genes`, x = Fam)) +
   theme_slide +
   xlab(NULL) + ylab(NULL) +
   scale_y_discrete(expand = c(0,0)) +
   scale_x_discrete(expand = c(0,0)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = rel(0.7))) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_gradientn(colours = heatscale, guide = FALSE) +
   geom_raster() +
   geom_text(aes(label = tile_lab))
@@ -328,7 +354,34 @@ alog <- ggplot(pd.alog, aes(x = stage, y = `Transcripts per million`,
   scale_colour_manual(values = cols, guide = FALSE) +
   facet_wrap(~symbol, nrow = 2, scales = "free_y") +
   geom_smooth(se = FALSE, colour = "grey40", size = 0.5) +
-  geom_point(position = position_jitter(width = 0.3), alpha = 0.8)
+  geom_point(size = 3, position = position_jitter(width = 0.3), alpha = 0.8)
+
+#######
+# spl #
+#######
+
+spl <- data.table(gene = c(
+  "LOC_Os02g04680", "LOC_Os06g49010", "LOC_Os09g31438", "LOC_Os07g32170",
+  "LOC_Os08g39890", "LOC_Os01g46984"), key = "gene")
+
+spl[, symbol := oryzr::LocToGeneName(gene)$symbols, by = gene]
+spl[is.na(symbol), symbol := gene]
+
+# add expression values
+pd.spl <- lmd.tpm[spl]
+
+# order panels by msuId
+pd.spl[, symbol := factor(symbol, levels = unique(symbol))]
+
+cols <- RColorBrewer::brewer.pal(3, "Set1")[c(2,1)]
+spl.plot <- ggplot(pd.spl, aes(x = stage, y = `Transcripts per million`,
+                            group = symbol, colour = call)) +
+  theme_slide + xlab(NULL) +
+  theme(strip.text = element_text(face = "italic")) +
+  scale_colour_manual(values = cols, guide = FALSE) +
+  facet_wrap(~symbol, nrow = 2, scales = "free_y") +
+  geom_smooth(se = FALSE, colour = "grey40", size = 0.5) +
+  geom_point(size = 3, position = position_jitter(width = 0.3), alpha = 0.8)
 
 #################
 # TF Enrichment #
@@ -382,7 +435,7 @@ mat.frame <- data.frame(
 mat <- as.matrix(mat.frame)
 hc <- hclust(dist(mat, method = "minkowski"), method = "ward.D2")
 ord <- rownames(mat)[hc$order]
-pd.hb[, symbol := factor(symbol, levels = ord)]
+pd.hb[, symbol := factor(symbol, levels = rev(ord))]
 
 # plot
 heatscale <- RColorBrewer::brewer.pal(6, "YlOrRd")
@@ -472,11 +525,10 @@ spc <- species.results[padj < 0.05, .(
   n_sig = length(unique(gene))), by = contrast]
 setkey(spc, contrast)
 
-species.results[, unique(contrast)]
-pal <- RColorBrewer::brewer.pal(5, "Set1")
+pal.struc <- RColorBrewer::brewer.pal(5, "Set1")
 
 # ruf vs. ind
-genes <- species.results[contrast == "indica.rufipogon"]
+genes <- species.results[contrast == "indica.rufipogon" & !is.na(symbol)]
 setorder(genes, padj, na.last = TRUE)
 gene.names <- genes[1:4, gene]
 pd <- tpm.clean[gene %in% gene.names & species %in% c("I", "R")]
@@ -487,16 +539,16 @@ struct1 <- ggplot(pd, aes(
   theme_slide + theme(
     strip.text.x = element_text(size = 10, face = "italic"),
     legend.text = element_text(face = "italic")) +
-  scale_colour_manual(values = c(pal[1], pal[2]),
+  scale_colour_manual(values = c(pal.struc[1], pal.struc[2]),
                       guide = guide_legend(title = NULL)) +
   ylab("TPM") + xlab(NULL) +
   scale_shape(guide = FALSE) +
-  facet_grid(. ~ symbol, drop = TRUE, scales = "free_y") +
+  facet_wrap(~ symbol, nrow = 1, scales = "free_y") +
   geom_smooth(method = lm, se = FALSE) +
   geom_point(position = position_jitter(width = 0.2), alpha = 0.5)
 
 # ruf vs. sat
-genes <- species.results[contrast == "japonica.rufipogon"]
+genes <- species.results[contrast == "japonica.rufipogon" & !is.na(symbol)]
 setorder(genes, padj, na.last = TRUE)
 gene.names <- genes[1:4, gene]
 pd <- tpm.clean[gene %in% gene.names & species %in% c("J", "R")]
@@ -507,16 +559,16 @@ struct2 <- ggplot(pd, aes(
   theme_slide + theme(
     strip.text.x = element_text(size = 10, face = "italic"),
     legend.text = element_text(face = "italic")) +
-  scale_colour_manual(values = c(pal[1], pal[3]),
+  scale_colour_manual(values = c(pal.struc[1], pal.struc[3]),
                       guide = guide_legend(title = NULL)) +
   ylab("TPM") + xlab(NULL) +
   scale_shape(guide = FALSE) +
-  facet_grid(. ~ symbol, drop = TRUE, scales = "free_y") +
+  facet_wrap(~ symbol, nrow = 1, scales = "free_y") +
   geom_smooth(method = lm, se = FALSE) +
   geom_point(position = position_jitter(width = 0.2), alpha = 0.5)
 
 # ind vs. sat
-genes <- species.results[contrast == "japonica.indica"]
+genes <- species.results[contrast == "japonica.indica" & !is.na(symbol)]
 setorder(genes, padj, na.last = TRUE)
 gene.names <- genes[1:4, gene]
 pd <- tpm.clean[gene %in% gene.names & species %in% c("J", "I")]
@@ -527,16 +579,16 @@ struct3 <- ggplot(pd, aes(
   theme_slide + theme(
     strip.text.x = element_text(size = 10, face = "italic"),
     legend.text = element_text(face = "italic")) +
-  scale_colour_manual(values = c(pal[2], pal[3]),
+  scale_colour_manual(values = c(pal.struc[2], pal.struc[3]),
                       guide = guide_legend(title = NULL)) +
   ylab("TPM") + xlab(NULL) +
   scale_shape(guide = FALSE) +
-  facet_grid(. ~ symbol, drop = TRUE, scales = "free_y") +
+  facet_wrap(~ symbol, nrow = 1, scales = "free_y") +
   geom_smooth(method = lm, se = FALSE) +
   geom_point(position = position_jitter(width = 0.2), alpha = 0.5)
 
 # ind vs. sat
-genes <- species.results[contrast == "barthii.glaberrima"]
+genes <- species.results[contrast == "barthii.glaberrima" & !is.na(symbol)]
 setorder(genes, padj, na.last = TRUE)
 gene.names <- genes[1:4, gene]
 pd <- tpm.clean[gene %in% gene.names & species %in% c("B", "G")]
@@ -547,11 +599,11 @@ struct4 <- ggplot(pd, aes(
   theme_slide + theme(
     strip.text.x = element_text(size = 10, face = "italic"),
     legend.text = element_text(face = "italic")) +
-  scale_colour_manual(values = c(pal[4], pal[5]),
+  scale_colour_manual(values = c(pal.struc[4], pal.struc[5]),
                       guide = guide_legend(title = NULL)) +
   ylab("TPM") + xlab(NULL) +
   scale_shape(guide = FALSE) +
-  facet_grid(. ~ symbol, drop = TRUE, scales = "free_y") +
+  facet_wrap(~ symbol, nrow = 1, scales = "free_y") +
   geom_smooth(method = lm, se = FALSE) +
   geom_point(position = position_jitter(width = 0.2), alpha = 0.5)
 
