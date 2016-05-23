@@ -53,10 +53,10 @@ source("src/plots.R")
 
 <br>
 
-*  **Cereals are staple foods**
-*  **Rice supplies a large proportion of dietary energy globally**
-*  **Demand increasing, resources decreasing**
-*  **Grain production depends on the structure of the inflorescence**
+*  Cereals are staple foods
+*  Rice supplies a large proportion of dietary energy
+*  Increasing demand & decreasing resources
+*  Grain production depends on the structure of the inflorescence
 
 ## Branching complexity is related to yield
 
@@ -70,7 +70,7 @@ print(ptypes2)
 
 ![](img/pan_dev.png)
 
-## Meristem transitions & branching | *TAWAWA1* / *G1 LIKE PROTEIN 5*
+## Meristem transitions & branching | ALOG family: *TAWAWA1* / *G1 LIKE PROTEIN 5*
 
 ```{r taw, fig.height = 3.77}
 my.img <- png::readPNG("img/taw.png")
@@ -79,7 +79,7 @@ grid::grid.raster(my.img)
 
 <footer class="source2">Yoshida <em>et al</em>., 2013. <a href="http://www.pnas.org/content/110/2/767.full">10.1073/pnas.1216151110</a></footer>
 
-## Meristem transitions & branching | *LONELY GUY 1*
+## Meristem transitions & branching | Cytokinin activation: *LONELY GUY 1*
 
 ```{r log1, fig.height = 3.77}
 my.img <- png::readPNG("img/log1.png")
@@ -100,7 +100,9 @@ knitr::kable(lmd.quant.table[!is.na(`Reads in genes (M)`)],
              align = c("r", rep("l", dim(lmd.quant.table)[2] - 1)))
 ```
 
-## Ovation V2 & rRNA exclusion
+<footer class="source2">Dissections: Hélène Adam & Israr Ud Din</footer>
+
+## rRNA contamination
 
 ```{r lmd.ribosomal}
 print(lmd.ribosomal)
@@ -126,8 +128,8 @@ cluster.tfs
 
 ## Geneset enrichment
 
-```{r gsea}
-gsea
+```{r gsea.plot}
+gsea.plot
 ```
 
 ## *SPL*/*SBP* genes
@@ -179,6 +181,8 @@ print(acc.pheno)
 
 ![](img/clearing.png)
 
+<footer class="source2">Dissections: Hélène Adam</footer>
+
 ## Mapping to *O. sativa japonica* Nipponbare genome
 
 ```{r statplot.5ac}
@@ -209,7 +213,7 @@ print(struct4)
 
 ## Structural variation between species
 
-| Contrast                                | *p* < 0.05    |
+| Contrast                                | Genes         |
 | ---:                                    | :----         |
 | *O. glaberrima* vs. *O. barthii*        | 495           |
 | *O. sativa indica* vs. *O. rufipogon*   | 1169          |
@@ -235,17 +239,11 @@ print(af1.genes)
 print(dom.genes)
 ```
 
-## Genomic support
+## More evidence required...
 
 ![](img/13742_2014_Article_40_Fig2_HTML.jpg)
 
 <footer class="source2">The 3,000 rice genomes project, 2014 <a href="http://gigascience.biomedcentral.com/articles/10.1186/2047-217X-3-7">10.1186/2047-217X-3-7</a></footer>
-
-## Mention some other approaches for the data
-
-*   comment about GWAS
-*   genomic data for SNPs and transposable elements
-*   structural variation in genes
 
 ## Acknowledgements
 

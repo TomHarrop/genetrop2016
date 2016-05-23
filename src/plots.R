@@ -193,9 +193,9 @@ lmd.quant.table[, Sample := factor(
 #              alpha = 0.8)
 
 lmd.ribosomal <- ggplot(lmd.quant.table,
-                        aes(x = `Yield (ng)`, y = `rRNA reads (M)`)) +
+                        aes(x = `Yield (ng)`, y = `rRNA reads (M)`/`Reads (M)`)) +
   theme_slide +
-  xlab("RNA input (ng)") +
+  xlab("RNA input (ng)") + ylab("Proportion of rRNA reads") +
   scale_fill_brewer(palette = "Set1", guide = guide_legend(title = NULL)) +
   geom_smooth(colour = "black", size = 0.5, se = TRUE, span = 1) +
   geom_point(aes(fill = Sample), colour = NA, shape = 21, size = 3,
@@ -272,7 +272,7 @@ centres.wide[, label := factor(label, levels = label)]
 plotData <- reshape2::melt(plotData.wide,
                            id.vars = c("id", "Cluster", "Membership", "label", "number"),
                            variable.name = "Stage",
-                           value.name = "Scaled, transformed read counts")
+                           value.name = "Scaled read count")
 
 # fix stage label
 plotData[, Stage := plyr::mapvalues(Stage, "ePBM.SBM", "ePBM/AM")]
@@ -281,7 +281,7 @@ plotData[, Stage := plyr::mapvalues(Stage, "ePBM.SBM", "ePBM/AM")]
 centres <- reshape2::melt(centres.wide, id.vars = 'label',
                           measure.vars = c("RM", "PBM", "ePBM.SBM", "SM"),
                           variable.name = 'Stage',
-                          value.name = "Scaled, transformed read counts")
+                          value.name = "Scaled read count")
 centres[, Stage := plyr::mapvalues(Stage, "ePBM.SBM", "ePBM/AM")]
 
 # set up heatscale
@@ -289,7 +289,7 @@ heatscale <- RColorBrewer::brewer.pal(n = 6, name = "YlOrRd")
 
 # main cluster figure
 mfuzzClusters <- ggplot(
-  plotData, aes(x = Stage, y = `Scaled, transformed read counts`,
+  plotData, aes(x = Stage, y = `Scaled read count`,
                 colour = Membership, group = id)) +
   theme_slide +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
@@ -405,7 +405,7 @@ gsea[, Category := factor(Category, levels = c("Transcription factors",
 gsea[, Stage := factor(Stage, levels = rev(levels(Stage)))]
 
 heatscale <- rev(RColorBrewer::brewer.pal(6, "RdBu"))
-gsea <- ggplot(gsea, aes(x = rn, y = Stage, fill = `Test\nstatistic`)) +
+gsea.plot <- ggplot(gsea, aes(x = rn, y = Stage, fill = `Test\nstatistic`)) +
   theme_slide +
   xlab(NULL) + ylab(NULL) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
@@ -525,6 +525,17 @@ spc <- species.results[padj < 0.05, .(
   n_sig = length(unique(gene))), by = contrast]
 setkey(spc, contrast)
 
+# # test vis
+# spc[, s1 := unlist(strsplit(contrast, "\\."))[1], by = contrast]
+# spc[, s2 := unlist(strsplit(contrast, "\\."))[2], by = contrast]
+# 
+# hspt <- RColorBrewer::brewer.pal(6, "YlOrRd")
+# ggplot(spc, aes(x = s2, y = s1, label = n_sig, size = n_sig, fill = n_sig)) +
+#   scale_size(range = c(10,20)) +
+#   scale_fill_gradientn(colours = hspt) +
+#   geom_point(mapping = aes(y = s1 - 0.5, x = s2), shape = 21) +
+#   geom_text(size = 16)
+  
 pal.struc <- RColorBrewer::brewer.pal(5, "Set1")
 
 # ruf vs. ind
