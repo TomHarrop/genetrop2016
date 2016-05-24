@@ -154,7 +154,7 @@ print(hdzip)
 
 ![](img/species.png)
 
-## Diversity in panicle architecture
+## Diversity of panicle architecture
 
 ```{r accessions}
 print(acc.pheno)
